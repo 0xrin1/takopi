@@ -28,6 +28,9 @@ classifiers = [
   "Operating System :: OS Independent",
 ]
 
+[project.optional-dependencies]
+xmpp = ["slixmpp>=1.8.0"]
+
 [project.urls]
 Homepage = "https://github.com/banteg/takopi"
 Repository = "https://github.com/banteg/takopi"
@@ -44,6 +47,7 @@ pi = "takopi.runners.pi:BACKEND"
 
 [project.entry-points."takopi.transport_backends"]
 telegram = "takopi.telegram.backend:BACKEND"
+xmpp = "takopi.xmpp.backend:BACKEND"
 
 [build-system]
 requires = ["uv_build>=0.9.18,<0.10.0"]
