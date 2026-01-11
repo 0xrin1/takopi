@@ -39,7 +39,7 @@ async def run_main_loop(
     client = cfg.client
     running_tasks: RunningTasks = {}
 
-    client.connect(disable_starttls=True, use_ssl=False)
+    client.start()
     await client.wait_ready()
 
     if cfg.default_chat:

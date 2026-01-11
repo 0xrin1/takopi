@@ -18,10 +18,16 @@ class XMPPClient(slixmpp.ClientXMPP):
         jid: str,
         password: str,
         *,
+        host: str | None = None,
+        port: int = 5222,
+        use_tls: bool = False,
         allowed_jids: frozenset[str] | None = None,
     ) -> None:
         super().__init__(jid, password)
         self.allowed_jids = allowed_jids
+        self._host = host
+        self._port = port
+        self._use_tls = use_tls
         self._message_queue: asyncio.Queue[tuple[str, str, str | None]] = asyncio.Queue()
         self._session_ready = asyncio.Event()
 
@@ -31,6 +37,15 @@ class XMPPClient(slixmpp.ClientXMPP):
 
         self.add_event_handler("session_start", self._on_session_start)
         self.add_event_handler("message", self._on_message)
+
+    def start(self) -> None:
+        """Connect to the XMPP server."""
+        if not self._use_tls:
+            self.enable_plaintext = True
+            self.enable_starttls = False
+            self.enable_direct_tls = False
+            self["feature_mechanisms"].unencrypted_plain = True
+        self.connect(host=self._host, port=self._port)
 
     async def _on_session_start(self, event: Any) -> None:
         await self.get_roster()

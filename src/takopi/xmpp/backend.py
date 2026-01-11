@@ -135,9 +135,21 @@ class XMPPBackend(TransportBackend):
             )
         allowed_jids = frozenset(str(j) for j in allowed_raw) if allowed_raw else None
 
+        # Connection options
+        host = transport_config.get("host")
+        port = int(transport_config.get("port", 5222))
+        use_tls = bool(transport_config.get("use_tls", False))
+
         startup_msg = _build_startup_message(runtime, os.getcwd())
 
-        client = XMPPClient(jid, password, allowed_jids=allowed_jids)
+        client = XMPPClient(
+            jid,
+            password,
+            host=host,
+            port=port,
+            use_tls=use_tls,
+            allowed_jids=allowed_jids,
+        )
         transport = XMPPTransport(client)
         presenter = XMPPPresenter()
 
